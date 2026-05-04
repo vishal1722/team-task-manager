@@ -8,13 +8,24 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
-// ✅ USE ONLY ONE CORS
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://scintillating-rolypoly-c39fda.netlify.app",
+];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(...process.env.FRONTEND_URL.split(",").map((url) => url.trim()));
+}
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173", // local dev
-    "https://team-task-manageretha.netlify.app" // production
-  ],
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy blocked origin: ${origin}`));
+    }
+  },
+  credentials: true,
 }));
 
 app.use(express.json());
