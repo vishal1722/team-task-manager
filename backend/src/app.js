@@ -8,7 +8,15 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
-app.use(cors());
+// ✅ USE ONLY ONE CORS
+app.use(cors({
+  origin: [
+    "http://localhost:5173", // local dev
+    "https://team-task-manageretha.netlify.app" // production
+  ],
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
